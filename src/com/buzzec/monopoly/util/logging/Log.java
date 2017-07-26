@@ -55,4 +55,7 @@ public class Log {
             }
         }
     }
+    public void log(Object input){
+        log(input.toString());
+    }
 }

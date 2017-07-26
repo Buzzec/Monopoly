@@ -65,6 +65,11 @@ public class Property extends Space {
     }
 
     @Override
+    public boolean isProperty() {
+        return true;
+    }
+
+    @Override
     public Player getOwner() {
         return owner;
     }
@@ -150,7 +155,7 @@ public class Property extends Space {
 
     private void checkMonopolized(){
         if(owner != null){
-            count = 1;
+            count = 0;
             for (Property x : owner.getProperties()) {
                 if (x.getBlockId() == blockId) {
                     count++;

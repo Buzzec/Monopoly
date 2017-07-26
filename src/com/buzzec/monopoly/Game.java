@@ -78,12 +78,26 @@ public class Game {
      * @return true if game continues, false if game is over
      */
     public boolean doTurn(){
+        //Set currentPlayer
+        Player currentPlayer = players.get(currentTurn);
+
+        log.log("---------------");
+        log.log("PLAYER " + currentPlayer.getPlayerNumber() + "'S TURN");
+        log.log("---------------");
+        log.log("Properties:");
+        StringBuilder output = new StringBuilder();
+        for(int x = 0; x < currentPlayer.getProperties().size(); x++){
+            if(x != 0){
+                output.append(", ");
+            }
+            output.append(currentPlayer.getProperties().get(x).getName());
+        }
+        log.log(output);
+        log.log("Money: " + currentPlayer.getMoney());
+        log.log("Jail Time Left: " + currentPlayer.getJailTimeLeft());
         //Roll Dice
         int rollOne = rollDie(log);
         int rollTwo = rollDie(log);
-
-        //Set currentPlayer
-        Player currentPlayer = players.get(currentTurn);
 
         //Give currentPlayer before turn actions
         currentPlayer.beforeTurn(log);
@@ -144,6 +158,11 @@ public class Game {
             //Run landOn
             landOn(currentPlayer, location, rollOne, rollTwo);
             if(checkOut()){
+                if(location.getOwner() != null && !location.getOwner().equals(currentPlayer)){
+                    while(currentPlayer.getProperties().size() > 0){
+                        location.getOwner().gainProperty(currentPlayer.getProperties().get(0), log);
+                    }
+                }
                 return players.size() > 1;
             }
         }
@@ -174,14 +193,8 @@ public class Game {
     }
     private static void buyProperty(Property prop, Player player, Log log){
         player.loseMoney(prop.getValue(), log);
-        player.getProperties().add(prop);
-        prop.setOwner(player);
         log.log("Player " + player.getPlayerNumber() + " buys " + prop.getName());
-    }
-    private static void giveProperty(Property prop, Player player, Log log){
-        player.getProperties().add(prop);
-        prop.setOwner(player);
-        log.log("Player " + player.getPlayerNumber() + " is given " + prop.getName());
+        player.gainProperty(prop, log);
     }
     //TODO add logging to generateBoard()
     public static ArrayList<Space> generateBoard(String fileName, Log log){
@@ -296,7 +309,19 @@ public class Game {
         int highBid = 0;
         int highPlayer = -1;
         remaining.addAll(players);
-        do{
+        for(int x = 0; x < remaining.size(); x++){
+            int bid = remaining.get(x).auction(prop, highBid, log);
+            log.log("Player " + remaining.get(x).getPlayerNumber() + " bids " + bid + " on " + prop.getName());
+            if(bid > highBid){
+                highBid = bid;
+                highPlayer = remaining.get(x).getPlayerNumber();
+            }
+            else{
+                remaining.remove(x);
+                x--;
+            }
+        }
+        while(remaining.size() > 1){
             for(int x = 0; x < remaining.size(); x++){
                 int bid = remaining.get(x).auction(prop, highBid, log);
                 log.log("Player " + remaining.get(x).getPlayerNumber() + " bids " + bid + " on " + prop.getName());
@@ -310,7 +335,6 @@ public class Game {
                 }
             }
         }
-        while(remaining.size() > 1);
         Player winner = null;
         if(highPlayer != -1){
             for(Player x : players){
@@ -322,7 +346,7 @@ public class Game {
             }
             if(winner != null){
                 winner.loseMoney(highBid, log);
-                giveProperty(prop, winner, log);
+                winner.gainProperty(prop, log);
             }
         }
         else {
@@ -422,7 +446,7 @@ public class Game {
                     if(x == currentTurn){
                         output = true;
                     }
-                    if(x <= currentTurn){
+                    if(x <= currentTurn && x != 0){
                         currentTurn--;
                     }
 
@@ -444,6 +468,10 @@ public class Game {
             sb.append(x.getId());
             sb.append(" ");
             sb.append(x.toString());
+            if(x.isProperty()){
+                sb.append(" ");
+                sb.append(((Property)x).getValue());
+            }
             sb.append("\n");
         }
         return sb.toString();

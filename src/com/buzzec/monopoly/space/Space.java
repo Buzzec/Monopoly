@@ -28,6 +28,10 @@ public class Space {
         return null;
     }
 
+    public boolean isProperty(){
+        return false;
+    }
+
     //Setters
     public void setId(int id) {
         this.id = id;

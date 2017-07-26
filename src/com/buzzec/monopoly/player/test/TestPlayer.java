@@ -5,10 +5,20 @@ import com.buzzec.monopoly.space.Space;
 import com.buzzec.monopoly.space.property.Property;
 import com.buzzec.monopoly.util.logging.Log;
 
+import java.util.ArrayList;
+
 /**
  * Created by bbett on 7/25/2017.
  */
 public class TestPlayer extends Player {
+    public TestPlayer(int playerNumber){
+        setPlayerNumber(playerNumber);
+        setMoney(0);
+        setJailTimeLeft(0);
+        setLocation(0);
+        setOut(false);
+        setProperties(new ArrayList<>());
+    }
     @Override
     public void beforeTurn(Log log) {
         log.log("Player " + getPlayerNumber() + " beforeTurn()");
@@ -34,15 +44,17 @@ public class TestPlayer extends Player {
     public void betweenTurn(Log log) {
         log.log("Player " + getPlayerNumber() + " betweenTurn()");
         Property temp = findLowestMortgaged();
-        if(getMoney() * 2 > temp.getValue()){
-            temp.unmortgage(log);
+        if(temp != null && temp.isMortgaged()){
+            if (getMoney() * 2 > temp.getValue()) {
+                temp.unmortgage(log);
+            }
         }
     }
 
     @Override
     public boolean buyOpenProperty(Property prop, Log log) {
         log.log("Player " + getPlayerNumber() + " buyOpenProperty()");
-        return prop.getValue() >= getMoney();
+        return prop.getValue() <= getMoney();
     }
 
     @Override
@@ -60,7 +72,9 @@ public class TestPlayer extends Player {
         while(getMoney() < 0){
             Property temp = findLowestUnmortgaged();
             if(temp != null) {
-                temp.mortgage(log);
+                if(!temp.mortgage(log)){
+                    break;
+                }
             }
         }
     }

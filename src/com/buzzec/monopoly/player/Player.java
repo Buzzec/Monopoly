@@ -39,11 +39,6 @@ public abstract class Player {
     public final ArrayList<Property> getProperties() {
         return properties;
     }
-    public final ArrayList<Property> getPropertiesCopy(){
-        ArrayList<Property> output = new ArrayList<>();
-        output.addAll(properties);
-        return output;
-    }
 
     //Setters
     public void setPlayerNumber(int playerNumber) {
@@ -58,6 +53,9 @@ public abstract class Player {
     public void setLocation(int location) {
         this.location = location;
     }
+    public void setOut(boolean out) {
+        this.out = out;
+    }
     public void setProperties(ArrayList<Property> properties) {
         this.properties = properties;
     }
@@ -65,7 +63,7 @@ public abstract class Player {
     //Money Methods
     public void gainMoney(int value, Log log){
         money += value;
-        log.log("Player " + playerNumber + " gains $ " + value);
+        log.log("Player " + playerNumber + " gains $" + value);
     }
     public void loseMoney(int value, Log log){
         money -= value;
@@ -98,6 +96,14 @@ public abstract class Player {
         }
         return false;
     }
+    public final void gainProperty(Property prop, Log log){
+        if(prop.getOwner() != null) {
+            prop.getOwner().getProperties().remove(prop.getOwner().findProperty(prop));
+        }
+        properties.add(prop);
+        prop.setOwner(this);
+        log.log("Player " + playerNumber + " is given " + prop.getName());
+    }
 
     //Events
     public abstract void beforeTurn(Log log);
@@ -108,4 +114,9 @@ public abstract class Player {
     public abstract boolean buyOpenProperty(Property prop, Log log);
     public abstract int auction(Property prop, int highBid,  Log log);
     public abstract void outWarning(Log log);
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj.getClass() == this.getClass() && playerNumber == ((Player)obj).playerNumber;
+    }
 }

@@ -10,13 +10,16 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-        Log log = new Log("logs\\test", null, true);
-        ArrayList<Player> players = new ArrayList<>();
-        for(int x = 0; x < 6; x++){
-            players.add(new TestPlayer(x));
+        for(int y = 0; y < 100; y++) {
+            Log log = new Log("logs\\test", null, true);
+            ArrayList<Player> players = new ArrayList<>();
+            for (int x = 0; x < 6; x++) {
+                players.add(new TestPlayer(x));
+            }
+            Game game = new Game("boards\\AmericanBoard.txt", players, Reference.STARTING_MONEY, log);
+            log.log(game);
+            while (game.doTurn(10000));
+            System.out.println("Game " + y);
         }
-        Game game = new Game("boards\\AmericanBoard.txt", players, Reference.STARTING_MONEY, log);
-        log.log(game);
-        while(game.doTurn());
     }
 }

@@ -17,7 +17,7 @@ public class Log {
     }
     public Log(String logFileFolder, String name, boolean useGeneratedName){
         if(useGeneratedName){
-            setLogFileName(logFileFolder + "\\" + LocalDateTime.now().toString().replace(':', '.'));
+            setLogFileName(logFileFolder + "\\" + LocalDateTime.now().toString().replace(':', '.') + ".txt");
         }
         else {
             setLogFileName(logFileFolder + "\\" + name);

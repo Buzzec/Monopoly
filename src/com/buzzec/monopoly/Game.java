@@ -1,5 +1,6 @@
 package com.buzzec.monopoly;
 
+import com.buzzec.monopoly.util.Helper;
 import com.buzzec.monopoly.util.logging.Log;
 import com.buzzec.monopoly.player.Player;
 import com.buzzec.monopoly.space.Card;
@@ -98,8 +99,8 @@ public class Game {
         log.log("Jail Time Left: " + currentPlayer.getJailTimeLeft());
         log.log("Location: " + currentPlayer.getLocation());
         //Roll Dice
-        int rollOne = rollDie(log);
-        int rollTwo = rollDie(log);
+        int rollOne = Helper.rollDie(log);
+        int rollTwo = Helper.rollDie(log);
 
         //Give currentPlayer before turn actions
         currentPlayer.beforeTurn(log);
@@ -197,16 +198,7 @@ public class Game {
         }
         return doTurn();
     }
-    private static int rollDie(Log log){
-        int roll = (int)(Math.random() * Reference.SIDES_ON_DIE) + 1;
-        log.log("Rolled: " + roll);
-        return roll;
-    }
-    private static void buyProperty(Property prop, Player player, Log log){
-        player.loseMoney(prop.getValue(), log);
-        log.log("Player " + player.getPlayerNumber() + " buys " + prop.getName());
-        player.gainProperty(prop, log);
-    }
+
     //TODO add logging to generateBoard()
     public static ArrayList<Space> generateBoard(String fileName, Log log){
         String line;
@@ -288,7 +280,7 @@ public class Game {
                                 rent));
                         break;
 
-                    //Utility
+                    //Helper
                     //ex: 12/Electric Company/150/4/10
                     case 5:
                         rent = new int[2];
@@ -390,7 +382,7 @@ public class Game {
         Class type = location.getClass();
         log.log("Player " + player.getPlayerNumber() + " landed on " + location.getName());
 
-        //Property, Railroad, or Utility
+        //Property, Railroad, or Helper
         if(type == Property.class || type == Railroad.class || type == Utility.class) {
             Property prop = (Property) location;
             //If no owner
@@ -399,7 +391,7 @@ public class Game {
                 //Give option to buy
                 if (player.buyOpenProperty(prop, log)) {
                     log.log("Chooses to buy");
-                    buyProperty(prop, player, log);
+                    Helper.buyProperty(prop, player, log);
                 }
                 //No buy then auction
                 else {

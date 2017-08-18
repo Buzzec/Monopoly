@@ -9,6 +9,7 @@ import com.buzzec.monopoly.space.property.Property;
 import com.buzzec.monopoly.space.property.Railroad;
 import com.buzzec.monopoly.space.property.Utility;
 import com.buzzec.monopoly.util.Reference;
+import exceptions.UnknownProperty;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -437,8 +438,7 @@ public class Game {
             }
         }
         else {
-            //TODO Put exception here
-            log.log("UNKNOWN PROPERTY");
+             throw new UnknownProperty();
         }
     }
     /**

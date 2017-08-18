@@ -95,6 +95,7 @@ public class Game {
         log.log(output);
         log.log("Money: " + currentPlayer.getMoney());
         log.log("Jail Time Left: " + currentPlayer.getJailTimeLeft());
+        log.log("Location: " + currentPlayer.getLocation());
         //Roll Dice
         int rollOne = rollDie(log);
         int rollTwo = rollDie(log);
@@ -144,6 +145,7 @@ public class Game {
             while (newLocation >= board.size()) {
                 currentPlayer.passGo(log);
                 newLocation -= board.size();
+                currentPlayer.gainMoney(Reference.GO_MONEY, log);
             }
 
             //Store new location
@@ -185,6 +187,14 @@ public class Game {
         }
         checkOut();
         return players.size() > 1;
+    }
+    public boolean doTurn(int moneyLimit){
+        for(Player x : players){
+            if(x.getMoney() >= moneyLimit){
+                return false;
+            }
+        }
+        return doTurn();
     }
     private static int rollDie(Log log){
         int roll = (int)(Math.random() * Reference.SIDES_ON_DIE) + 1;

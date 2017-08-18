@@ -13,7 +13,8 @@ public class Reference {
             SIDES_ON_DIE = 6,
             MORTGAGE_DIVISOR = 2,
             BUILDING_SELL_DIVISOR = 2,
-            STARTING_MONEY = 4000;
+            STARTING_MONEY = 4000,
+            GO_MONEY = 200;
     public static final double
             MORTGAGE_BUY_BACK_FACTOR = 1.1;
     public static final Log

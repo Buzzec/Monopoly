@@ -1,5 +1,6 @@
 package com.buzzec.monopoly;
 
+import com.buzzec.monopoly.util.Helper;
 import com.buzzec.monopoly.util.logging.Log;
 import com.buzzec.monopoly.player.Player;
 import com.buzzec.monopoly.space.Card;
@@ -9,6 +10,7 @@ import com.buzzec.monopoly.space.property.Property;
 import com.buzzec.monopoly.space.property.Railroad;
 import com.buzzec.monopoly.space.property.Utility;
 import com.buzzec.monopoly.util.Reference;
+import exceptions.UnknownProperty;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -95,9 +97,10 @@ public class Game {
         log.log(output);
         log.log("Money: " + currentPlayer.getMoney());
         log.log("Jail Time Left: " + currentPlayer.getJailTimeLeft());
+        log.log("Location: " + currentPlayer.getLocation());
         //Roll Dice
-        int rollOne = rollDie(log);
-        int rollTwo = rollDie(log);
+        int rollOne = Helper.rollDie(log);
+        int rollTwo = Helper.rollDie(log);
 
         //Give currentPlayer before turn actions
         currentPlayer.beforeTurn(log);
@@ -144,6 +147,7 @@ public class Game {
             while (newLocation >= board.size()) {
                 currentPlayer.passGo(log);
                 newLocation -= board.size();
+                currentPlayer.gainMoney(Reference.GO_MONEY, log);
             }
 
             //Store new location
@@ -186,16 +190,15 @@ public class Game {
         checkOut();
         return players.size() > 1;
     }
-    private static int rollDie(Log log){
-        int roll = (int)(Math.random() * Reference.SIDES_ON_DIE) + 1;
-        log.log("Rolled: " + roll);
-        return roll;
+    public boolean doTurn(int moneyLimit){
+        for(Player x : players){
+            if(x.getMoney() >= moneyLimit){
+                return false;
+            }
+        }
+        return doTurn();
     }
-    private static void buyProperty(Property prop, Player player, Log log){
-        player.loseMoney(prop.getValue(), log);
-        log.log("Player " + player.getPlayerNumber() + " buys " + prop.getName());
-        player.gainProperty(prop, log);
-    }
+
     //TODO add logging to generateBoard()
     public static ArrayList<Space> generateBoard(String fileName, Log log){
         String line;
@@ -277,7 +280,7 @@ public class Game {
                                 rent));
                         break;
 
-                    //Utility
+                    //Helper
                     //ex: 12/Electric Company/150/4/10
                     case 5:
                         rent = new int[2];
@@ -379,7 +382,7 @@ public class Game {
         Class type = location.getClass();
         log.log("Player " + player.getPlayerNumber() + " landed on " + location.getName());
 
-        //Property, Railroad, or Utility
+        //Property, Railroad, or Helper
         if(type == Property.class || type == Railroad.class || type == Utility.class) {
             Property prop = (Property) location;
             //If no owner
@@ -388,7 +391,7 @@ public class Game {
                 //Give option to buy
                 if (player.buyOpenProperty(prop, log)) {
                     log.log("Chooses to buy");
-                    buyProperty(prop, player, log);
+                    Helper.buyProperty(prop, player, log);
                 }
                 //No buy then auction
                 else {
@@ -427,8 +430,7 @@ public class Game {
             }
         }
         else {
-            //TODO Put exception here
-            log.log("UNKNOWN PROPERTY");
+             throw new UnknownProperty();
         }
     }
     /**

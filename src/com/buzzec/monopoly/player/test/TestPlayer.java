@@ -60,8 +60,9 @@ public class TestPlayer extends Player {
     @Override
     public int auction(Property prop, int highBid, Log log) {
         log.log("Player " + getPlayerNumber() + " auction()");
-        if(highBid < prop.getValue() && highBid < getMoney()){
-            return highBid + 1;
+        int bid = highBid + (int)(Math.random() * 10) + 1;
+        if(highBid <= prop.getValue() && bid < getMoney()){
+            return bid;
         }
         return -1;
     }

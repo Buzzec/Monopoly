@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="DeckMaker">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../DeckMaker" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../DeckMaker/src" />
+    </SOURCES>
+  </library>
+</component>

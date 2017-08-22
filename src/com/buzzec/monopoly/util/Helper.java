@@ -1,7 +1,7 @@
 package com.buzzec.monopoly.util;
 
 import com.buzzec.monopoly.player.Player;
-import com.buzzec.monopoly.space.Card;
+import com.buzzec.monopoly.space.DrawCard;
 import com.buzzec.monopoly.space.Cost;
 import com.buzzec.monopoly.space.Space;
 import com.buzzec.monopoly.space.property.Property;
@@ -69,13 +69,13 @@ public class Helper {
                         board.add(new Space(Integer.parseInt(splitLine[0]),
                                 splitLine[1]));
                         break;
-                    //Card or Cost
+                    //DrawCard or Cost
                     case 3:
                         switch(splitLine[1]){
-                            //Card
-                            //ex: 2/Card/Community Chest
-                            case "Card":
-                                board.add(new Card(Integer.parseInt(splitLine[0]),
+                            //DrawCard
+                            //ex: 2/DrawCard/Community Chest
+                            case "DrawCard":
+                                board.add(new DrawCard(Integer.parseInt(splitLine[0]),
                                         splitLine[1],
                                         splitLine[2]));
                                 break;

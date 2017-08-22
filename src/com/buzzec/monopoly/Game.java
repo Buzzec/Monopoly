@@ -3,7 +3,7 @@ package com.buzzec.monopoly;
 import com.buzzec.monopoly.util.Helper;
 import com.buzzec.monopoly.util.logging.Log;
 import com.buzzec.monopoly.player.Player;
-import com.buzzec.monopoly.space.Card;
+import com.buzzec.monopoly.space.DrawCard;
 import com.buzzec.monopoly.space.Cost;
 import com.buzzec.monopoly.space.Space;
 import com.buzzec.monopoly.space.property.Property;
@@ -259,7 +259,7 @@ public class Game {
         return -1;
     }
     //TODO implement cards
-    private void drawCard(Card card, Player player){
+    private void drawCard(DrawCard drawCard, Player player){
 
     }
     private void sendToJail(Player player){
@@ -301,10 +301,10 @@ public class Game {
             }
         }
 
-        //Card
-        else if(type == Card.class) {
+        //DrawCard
+        else if(type == DrawCard.class) {
             //Draw a card
-            drawCard((Card) location, player);
+            drawCard((DrawCard) location, player);
         }
 
         //Cost
